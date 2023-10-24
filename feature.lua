@@ -70,28 +70,3 @@ end
 manager = {
 	Company = "Google"
 }
-setmetatable(manager,user);
-
-
---manager:setName("Bob")
-
-
-
-lamp = {
-  on = false,
- 
-}
--- через точку, тогда аргумент надо указывать
-function lamp.turn_on(l) l.on = true end
- 
--- через двоеточкие, тогда аргумент неявно задается сам, как переменная "self"
--- "self" - и есть та лампочка, для которой вызвали метод
-function lamp:turn_off() self.on = false end
-superlamp = {
-  brightness = 100
-}
--- указываем родительскую таблицу
-setmetatable(superlamp, lamp)
--- и ее методы теперь доступны
-superlamp:turn_on()
-superlamp:turn_off()
