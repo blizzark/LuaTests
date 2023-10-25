@@ -41,32 +41,113 @@ apply(t, b)
 -- Далее я хочу потестить все ли виды связей объектов можно реализовать в Lua
 
 -- Наследование --
-user = {
-	Name = "",
-	Age = 0,
-	setName = function(U, name) U.Name = name end,
-	setAge = function(U, age) 
-		if age >= 18 then
-			U.Age = age
-		else
-			error("Возраст меньше 18!!!")
+User = {}
+
+function User:new(name, age)
+	
+	
+	
+	local obj = {}
+	
+	obj.Name = name
+	obj.Age = age
+	
+	function obj:getName()
+		return self.Name
+	end
+	
+	function obj:getAge()
+		if(age < 18) then
+			return 18
 		end
-	end,
-	Salary = 1000;
-		
-}
-
-function user:salaryPrint() print(self.Salary) end
-
-user:setName("Dad")
--- user:setAge(10)
-status, err = pcall(user.setAge,user, 10)
-if not status then 
---	print(err)
-else
---	print(user.Age)
+		return self.Age
+	end
+	
+	setmetatable(obj, self)
+	self.__index = self 
+	return obj
 end
 
-manager = {
+Tom = User:new("Tom", 10)
+Bob= User:new("Bob", 22)
+
+
+--print(Tom:getName(), Tom:getAge());
+--print(Bob:getName(), Bob:getAge());
+
+Manager = {
 	Company = "Google"
 }
+
+setmetatable(Manager ,{__index = User}) 
+
+Sam = Manager:new("Sam", 30)
+print(Sam:getName(), Sam:getAge(), Sam.Company);
+
+
+--------------------------------------
+--Агрегация--
+
+Department = {}
+
+function Department:new(name)
+	
+	local obj = {}
+	obj.Name = name
+	
+	function obj:getNameDepartment()
+		return self.Name
+	end
+	
+	setmetatable(obj, self)
+	self.__index = self 
+	return obj
+end
+	
+Worker = {
+
+}
+
+function Worker:new()
+	local obj = {}
+	
+	function obj:setDepartment(department) 
+		obj.Department = department
+	end
+	
+	function obj:getDepartment() 
+		return self.Department
+	end
+	
+	setmetatable(obj, self)
+	self.__index = self 
+	return obj
+end
+	
+	
+
+accounting = Department:new("Accountant")
+
+developers = Department:new("Developer")
+
+Tim = Worker:new()
+Tim:setDepartment(accounting)
+Tim:setDepartment(developers)
+
+print(Tim:getDepartment():getNameDepartment())
+
+
+-- остальное понятно, что по аналогии Ассоциация, Реализация, Компоновка и т.д..
+
+
+
+
+
+
+
+
+
+
+
+
+
